@@ -5,11 +5,13 @@
 <p align="center"><a href="https://www.buymeacoffee.com/HBiSoft" target="_blank" ><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 164px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a></p>
 
 ---
+
 </br>
 
-# HBRecorder
+# HBRecorder (Modified Version)
+
 [![](https://jitpack.io/v/HBiSoft/HBRecorder.svg)](https://jitpack.io/#HBiSoft/HBRecorder)
-[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-HBRecorder-green.svg?style=flat )]( https://android-arsenal.com/details/1/7897 )
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-HBRecorder-green.svg?style=flat)](https://android-arsenal.com/details/1/7897)
 
 <p align="center">Lightweight screen and audio recording Android library </br></br><b>Requires API level 21></b></p>
 
@@ -24,21 +26,20 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/35602540/66485516-3e78fd80-eaa9-11e9-9fea-f59bfa7c1389.gif" width="247" height="480" </p>
 
 </br></br>
-    
 
-**Adding the library to your project:**
----
+## **Adding the library to your project:**
+
 Add the following in your root build.gradle at the end of repositories:
 
 ```java
 allprojects {
     repositories {
         ...
-        maven { url 'https://jitpack.io' }	    
+        maven { url 'https://jitpack.io' }
     }
 }
 ```
-    
+
 Implement library in your app level build.gradle:
 
 ```java
@@ -46,10 +47,11 @@ dependencies {
     implementation 'com.github.HBiSoft:HBRecorder:3.0.9'
 }
 ```
-    
 
 **Implementing the library:**
---- 
+
+---
+
 1. In your `Activity`, first implement `HBRecorder`, as shown below:
 
 ```java
@@ -83,8 +85,9 @@ public void HBRecorderOnResume() {
     //When recording was resumed
 }
 ```
-    
+
 3. Init `HBRecorder` as shown below:
+
 ```java
 public class MainActivity extends AppCompatActivity implements HBRecorderListener {
     HBRecorder hbRecorder;
@@ -92,15 +95,16 @@ public class MainActivity extends AppCompatActivity implements HBRecorderListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);     
+        setContentView(R.layout.activity_main);
 
         //Init HBRecorder
-        hbRecorder = new HBRecorder(this, this);        
+        hbRecorder = new HBRecorder(this, this);
 
 }
 ```
-    
+
 4. Add the following permissions in your manifest:
+
 ```java
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
@@ -114,8 +118,8 @@ That's it, `HBRecorder` is now ready to be used.
 
 ---
 
-When you want to start capturing your screen, it is important you do it as shown below:
----
+## When you want to start capturing your screen, it is important you do it as shown below:
+
 ```java
 private void startRecordingScreen() {
     MediaProjectionManager mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -136,8 +140,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-All available methods:
----
+## All available methods:
+
 ```java
 // Set the output path as a String
 // Only use this on devices running Android 9 and lower or you have to add android:requestLegacyExternalStorage="true" in your manifest
@@ -153,7 +157,7 @@ hbrecorder.setFileName(String);
 // Set audio bitrate as int
 // Defaults to - 128000
 hbrecorder.setAudioBitrate(int);
-// Set audio sample rate as int 
+// Set audio sample rate as int
 // Defaults to - 44100
 hbrecorder.setAudioSamplingRate(int);
 // Enable/Disable audio
@@ -200,13 +204,16 @@ hbrecorder.setMaxFileSize(long);
 hbRecorder.setMaxDuration(int);
 ```
 
-Custom setting:
----
+## Custom setting:
+
 When you want to enable custom settings you must first call:
+
 ```java
 hbRecorder.enableCustomSettings();
 ```
+
 Then you can set the following:
+
 ```java
 //MUST BE ONE OF THE FOLLOWING - https://developer.android.com/reference/android/media/MediaRecorder.AudioSource.html
 hbRecorder.setAudioSource(String);
@@ -224,6 +231,7 @@ hbRecorder.setOutputFormat(String);
 ```
 
 ---
+
 It is important to note that limitations are device dependent. It is best to set the video encoder to "DEFAULT" and let `MediaRecorder` pick the best encoder.
 
 In the demo app you will have the option to test different video encoders, bitrate, frame rate and output formats. If your device does not support any of the parameters you have selected `HBRecorderOnError` will be called.

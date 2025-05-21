@@ -11,8 +11,6 @@
             android:foregroundServiceType="mediaProjection|microphone"
             tools:targetApi="q" />
 
-        <receiver android:name="com.hbisoft.hbrecorder.NotificationReceiver"/>
-
     </application>
 
 </manifest>
