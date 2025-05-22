@@ -89,15 +89,15 @@ public class HBRecorder implements MyListener {
 
     /*Set output path*/
     public void setOutputPath(String path) {
-        // Append ScreenRecordings subdirectory
-        String subDirPath = path + "/ScreenRecordings";
-        File subDir = new File(subDirPath);
-        if (!subDir.exists()) {
-            if (!subDir.mkdirs()) {
-                Log.e("HBRecorder", "Failed to create ScreenRecordings directory");
+        path = path.replaceAll("/+$", "");
+    
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e("HBRecorder", "Failed to create directory");
             }
         }
-        outputPath = subDirPath;
+        outputPath = path;
     }
 
     Uri mUri;
