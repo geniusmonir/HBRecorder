@@ -239,7 +239,13 @@ public class ScreenRecordService extends Service {
 
                 if (returnedUri == null) {
                     if (path == null) {
-                        path = getApplicationContext().getFilesDir().getAbsolutePath();
+                        path = getApplicationContext().getFilesDir().getAbsolutePath() + "/ScreenRecordings";
+                        File subDir = new File(path);
+                        if (!subDir.exists()) {
+                            if (!subDir.mkdirs()) {
+                                Log.e("HBRecorder", "Failed to create ScreenRecordings directory");
+                            }
+                        }
                     }
                 }
 
@@ -526,7 +532,7 @@ public class ScreenRecordService extends Service {
             name = videoQuality + curTime;
         }
 
-        String subDirPath = path + "/ScreenRecordings";
+        String subDirPath = path;
         File subDir = new File(subDirPath);
         if (!subDir.exists()) {
             if (!subDir.mkdirs()) {
