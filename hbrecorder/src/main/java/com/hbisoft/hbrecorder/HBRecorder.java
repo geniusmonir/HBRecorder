@@ -89,6 +89,13 @@ public class HBRecorder implements MyListener {
 
     /*Set output path*/
     public void setOutputPath(String path) {
+        File dir = new File(path);
+        
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                Log.e("HBRecorder", "Failed to create directory");
+            }
+        }
         outputPath = path;
     }
 
@@ -136,7 +143,7 @@ public class HBRecorder implements MyListener {
         maxDuration = seconds * 1000;
     }
 
-    /*Set max file size in kb*/
+    /*Set max file size in bytes*/
     public void setMaxFileSize(long fileSize) {
         maxFileSize = fileSize;
     }
@@ -329,13 +336,22 @@ public class HBRecorder implements MyListener {
     private void startService(Intent data) {
         try {
             if (!mWasUriSet) {
+                String observerPath;
+
                 if (outputPath != null) {
-                    File file = new File(outputPath);
-                    String parent = file.getParent();
-                    observer = new FileObserver(parent, HBRecorder.this);
+                    observerPath = outputPath;
                 } else {
-                    observer = new FileObserver(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)), HBRecorder.this);
+                    observerPath = context.getFilesDir().getAbsolutePath() + "/ScreenRecordings";
+                    File subDir = new File(observerPath);
+                    if (!subDir.exists()) {
+                        if (!subDir.mkdirs()) {
+                            Log.e("HBRecorder", "Failed to create ScreenRecordings directory");
+                        }
+                    }
+                    // Update outputPath to ensure consistency
+                    outputPath = observerPath;
                 }
+                observer = new FileObserver(observerPath, HBRecorder.this);
                 observer.startWatching();
             }
 

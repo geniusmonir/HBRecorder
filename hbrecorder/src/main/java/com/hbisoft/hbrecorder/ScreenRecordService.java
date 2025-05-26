@@ -32,6 +32,7 @@ import android.os.Looper;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -183,7 +184,7 @@ public class ScreenRecordService extends Service {
 
                 //Set notification notification button text if developer did not
                 if (notificationButtonText == null) {
-                    notificationButtonText = "STOP RECORDING";
+                    notificationButtonText = "STOP";
                 }
                 //Set notification bitrate if developer did not
                 if (audioBitrate == 0) {
@@ -218,31 +219,16 @@ public class ScreenRecordService extends Service {
                         manager.createNotificationChannel(channel);
                         Notification notification;
 
-                        Intent myIntent = new Intent(this, NotificationReceiver.class);
-                        PendingIntent pendingIntent;
-
-                        if (Build.VERSION.SDK_INT >= 31) {
-                            pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, PendingIntent.FLAG_IMMUTABLE);
-                        } else {
-                            pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-
-                        }
-
-                        Notification.Action action = new Notification.Action.Builder(
-                                Icon.createWithResource(this, android.R.drawable.presence_video_online),
-                                notificationButtonText,
-                                pendingIntent).build();
-
                         if (notificationSmallIcon != null) {
                             Bitmap bmp = BitmapFactory.decodeByteArray(notificationSmallIcon, 0, notificationSmallIcon.length);
                             //Modify notification badge
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(Icon.createWithBitmap(bmp)).setContentTitle(notificationTitle).setContentText(notificationDescription).addAction(action).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(Icon.createWithBitmap(bmp)).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
 
                         } else if (notificationSmallVector != 0) {
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(notificationSmallVector).setContentTitle(notificationTitle).setContentText(notificationDescription).addAction(action).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(notificationSmallVector).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
                         } else {
                             //Modify notification badge
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(R.drawable.icon).setContentTitle(notificationTitle).setContentText(notificationDescription).addAction(action).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(R.drawable.icon).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
                         }
                         startFgs(101, notification);
                     }
@@ -253,7 +239,13 @@ public class ScreenRecordService extends Service {
 
                 if (returnedUri == null) {
                     if (path == null) {
-                        path = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES));
+                        path = getApplicationContext().getFilesDir().getAbsolutePath() + "/ScreenRecordings";
+                        File subDir = new File(path);
+                        if (!subDir.exists()) {
+                            if (!subDir.mkdirs()) {
+                                Log.e("HBRecorder", "Failed to create ScreenRecordings directory");
+                            }
+                        }
                     }
                 }
 
@@ -540,7 +532,16 @@ public class ScreenRecordService extends Service {
             name = videoQuality + curTime;
         }
 
-        filePath = path + "/" + name + ".mp4";
+        String subDirPath = path;
+        File subDir = new File(subDirPath);
+        if (!subDir.exists()) {
+            if (!subDir.mkdirs()) {
+                throw new Exception("Failed to create ScreenRecordings directory");
+            }
+        }
+
+        // Updated to include ScreenRecordings subdirectory
+        filePath = subDirPath + "/" + name + ".mp4";
 
         fileName = name + ".mp4";
 
@@ -581,10 +582,10 @@ public class ScreenRecordService extends Service {
             }
         }else{
             if (outputFormat!=null){
-                filePath = path + "/" + name + getExtension(outputFormat);
+                filePath = subDirPath + "/" + name + getExtension(outputFormat);
                 fileName = name + getExtension(outputFormat);
             }else {
-                filePath = path + "/" + name + ".mp4";
+                filePath = subDirPath + "/" + name + ".mp4";
                 fileName = name + ".mp4";
             }
             mMediaRecorder.setOutputFile(filePath);

@@ -9,9 +9,8 @@
 
         <service android:name="com.hbisoft.hbrecorder.ScreenRecordService"
             android:foregroundServiceType="mediaProjection|microphone"
+            android:stopWithTask="false"
             tools:targetApi="q" />
-
-        <receiver android:name="com.hbisoft.hbrecorder.NotificationReceiver"/>
 
     </application>
 
