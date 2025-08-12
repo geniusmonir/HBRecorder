@@ -209,8 +209,9 @@ public class ScreenRecordService extends Service {
 
                 //Notification
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    String channelId = "001";
-                    String channelName = "RecordChannel";
+                    String channelId = "EBM_NOTIFICATION_CH";
+                    String channelName = "EBM_NOTIFICATION_CH_NAME";
+                    String channelGroup = "EBM_NOTIFICATION_CH_GROUP";
                     NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE);
                     channel.setLightColor(Color.BLUE);
                     channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -222,13 +223,31 @@ public class ScreenRecordService extends Service {
                         if (notificationSmallIcon != null) {
                             Bitmap bmp = BitmapFactory.decodeByteArray(notificationSmallIcon, 0, notificationSmallIcon.length);
                             //Modify notification badge
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(Icon.createWithBitmap(bmp)).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId)
+                                    .setContentTitle(notificationTitle)
+                                    .setContentText(notificationDescription)
+                                    .setSmallIcon(Icon.createWithBitmap(bmp))
+                                    .setOngoing(true)
+                                    .setGroup(channelGroup)
+                                    .build();
 
                         } else if (notificationSmallVector != 0) {
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(notificationSmallVector).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId)
+                                    .setOngoing(true)
+                                    .setSmallIcon(notificationSmallVector)
+                                    .setContentTitle(notificationTitle)
+                                    .setContentText(notificationDescription)
+                                    .setGroup(channelGroup)
+                                    .build();
                         } else {
                             //Modify notification badge
-                            notification = new Notification.Builder(getApplicationContext(), channelId).setOngoing(true).setSmallIcon(R.drawable.icon).setContentTitle(notificationTitle).setContentText(notificationDescription).build();
+                            notification = new Notification.Builder(getApplicationContext(), channelId)
+                                    .setOngoing(true)
+                                    .setSmallIcon(R.drawable.icon)
+                                    .setContentTitle(notificationTitle)
+                                    .setContentText(notificationDescription)
+                                    .setGroup(channelGroup)
+                                    .build();
                         }
                         startFgs(101, notification);
                     }
